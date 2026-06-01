@@ -53,10 +53,11 @@ const renderBlueprints = (blueprints, container) => {
 
   if (blueprints.length === 0) {
   container.textContent = "No blueprints found.";
+
   return;
 }
 
-  blueprints.forEach(blueprint => {
+    blueprints.forEach(blueprint => {
 
     const card = document.createElement("div");
     card.className = "blueprint-card";
