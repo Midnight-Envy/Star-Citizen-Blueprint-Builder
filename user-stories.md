@@ -6,7 +6,7 @@
 
 #### User Story
 
-As a player, I want to search for Star Citizen blueprints so that I can quickly find craftable items that interest me.
+As a user, I want to search for Star Citizen blueprints so that I can quickly find craftable items that interest me.
 
 #### Details
 
@@ -23,7 +23,7 @@ As a player, I want to search for Star Citizen blueprints so that I can quickly 
 
 #### User Story
 
-As a player, I want to click a blueprint so that I can view the materials required to craft it.
+As a user, I want to click a blueprint so that I can view the materials required to craft it.
 
 #### Details
 
@@ -39,7 +39,7 @@ As a player, I want to click a blueprint so that I can view the materials requir
 
 #### User Story
 
-As a player, I want to save blueprint materials to a shopping cart so that I can keep track of everything I need to gather.
+As a user, I want to save blueprint materials to a shopping cart so that I can keep track of everything I need to gather.
 
 #### Details
 
