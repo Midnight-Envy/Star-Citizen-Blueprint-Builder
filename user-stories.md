@@ -31,8 +31,6 @@ As a player, I want to click a blueprint so that I can view the materials requir
 - The application displays blueprint details in a dedicated information panel.
 - Required ingredients and crafting information are displayed dynamically.
 
-#### Array Methods Used
-
 ---
 
 ### Feature 3: Add Blueprint Materials to Shopping Cart
@@ -49,7 +47,5 @@ As a player, I want to save blueprint materials to a shopping cart so that I can
 - The application updates a running list of required materials.
 - Multiple blueprints can contribute materials to the same shopping cart.
 - Material quantities are combined when duplicate materials exist.
-
-#### Array Methods Used
 
 ---
