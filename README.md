@@ -34,18 +34,6 @@ This project uses the Star Citizen Wiki API.
 
 https://api.star-citizen.wiki
 
-## Project Structure
-
-```text
-project-folder/
-│
-├── index.html
-├── styles.css
-├── index.js
-├── README.md
-└── user-stories.md
-```
-
 ## MVP
 
 The minimum viable product includes:
