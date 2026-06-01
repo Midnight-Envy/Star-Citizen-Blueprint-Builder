@@ -52,13 +52,12 @@ const renderBlueprints = (blueprints, container) => {
   container.textContent = "";
 
   if (blueprints.length === 0) {
-  container.textContent = "No blueprints found.";
+    container.textContent = "No blueprints found.";
 
-  return;
-}
+    return;
+  }
 
-    blueprints.forEach(blueprint => {
-
+  blueprints.forEach(blueprint => {
     const card = document.createElement("div");
     card.className = "blueprint-card";
 
@@ -66,12 +65,10 @@ const renderBlueprints = (blueprints, container) => {
     title.textContent = blueprint.output_name;
 
     const craftTime = document.createElement("p");
-    craftTime.textContent =
-      `Craft Time: ${blueprint.craft_time_label}`;
+    craftTime.textContent = `Craft Time: ${blueprint.craft_time_label}`;
 
     const ingredientCount = document.createElement("p");
-    ingredientCount.textContent =
-      `Ingredient Count: ${blueprint.ingredient_count}`;
+    ingredientCount.textContent = `Ingredient Count: ${blueprint.ingredient_count}`;
 
     card.append(
       title,
