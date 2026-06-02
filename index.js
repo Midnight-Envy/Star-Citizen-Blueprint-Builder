@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.querySelector("#blueprint-search-form");
   const searchInput = document.querySelector("#blueprint-search-input");
   const blueprintContainer = document.querySelector("#blueprint-container");
+  const blueprintDetails = document.querySelector("#blueprint-details");
 
   fetchAllBlueprints("https://api.star-citizen.wiki/api/blueprints?page[size]=200")
     .then(blueprints => {
@@ -13,6 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       console.log("All blueprints loaded:", allBlueprints.length);
+      //I need to console log the blueprint data to see what all the info is so i can refer to it later
+      console.log("Blueprint data:", allBlueprints);
     });
 
   searchForm.addEventListener("submit", event => {
@@ -26,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .includes(searchTerm);
     });
 
-    renderBlueprints(matchingBlueprints, blueprintContainer);
+    renderBlueprints(matchingBlueprints, blueprintContainer, blueprintDetails);
   });
 });
 
@@ -48,27 +51,38 @@ const fetchAllBlueprints = url => {
     });
 };
 
-const renderBlueprints = (blueprints, container) => {
+const renderBlueprints = (blueprints, container, detailsContainer) => {
   container.textContent = "";
 
   if (blueprints.length === 0) {
     container.textContent = "No blueprints found.";
-
+    
     return;
   }
 
   blueprints.forEach(blueprint => {
     const card = document.createElement("div");
     card.className = "blueprint-card";
+    card.dataset.blueprintUuid = blueprint.uuid;
 
     const title = document.createElement("h2");
     title.textContent = blueprint.output_name;
 
     const craftTime = document.createElement("p");
-    craftTime.textContent = `Craft Time: ${blueprint.craft_time_label}`;
+    craftTime.textContent =
+      `Craft Time: ${blueprint.craft_time_label}`;
 
     const ingredientCount = document.createElement("p");
-    ingredientCount.textContent = `Ingredient Count: ${blueprint.ingredient_count}`;
+    ingredientCount.textContent =
+      `Ingredient Count: ${blueprint.ingredient_count}`;
+
+    card.addEventListener("click", () => {
+      const selectedBlueprint = allBlueprints.find(currentBlueprint => {
+        return currentBlueprint.uuid === card.dataset.blueprintUuid;
+      });
+
+      renderBlueprintDetails(selectedBlueprint, detailsContainer);
+  });
 
     card.append(
       title,
@@ -78,4 +92,31 @@ const renderBlueprints = (blueprints, container) => {
 
     container.append(card);
   });
+};
+
+const renderBlueprintDetails = (blueprint, container) => {
+  container.textContent = "";
+
+  const title = document.createElement("h2");
+  title.textContent = blueprint.output_name;
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Crafting Materials";
+
+  const list = document.createElement("ul");
+  console.log(blueprint.ingredients);
+
+  blueprint.ingredients.forEach(ingredient => {
+    const item = document.createElement("li");
+    item.textContent =
+      `${ingredient.name}: ${ingredient.quantity_scu} SCU`;
+
+    list.append(item);
+  });
+
+  container.append(
+    title,
+    heading,
+    list
+  );
 };
