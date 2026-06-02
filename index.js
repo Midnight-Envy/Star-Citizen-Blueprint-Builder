@@ -14,8 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       console.log("All blueprints loaded:", allBlueprints.length);
-      //I need to console log the blueprint data to see what all the info is so i can refer to it later
-      console.log("Blueprint data:", allBlueprints);
+      console.log("Blueprint data:", allBlueprints); //
     });
 
   searchForm.addEventListener("submit", event => {
@@ -82,7 +81,7 @@ const renderBlueprints = (blueprints, container, detailsContainer) => {
       });
 
       renderBlueprintDetails(selectedBlueprint, detailsContainer);
-  });
+    });
 
     card.append(
       title,
