@@ -108,31 +108,11 @@ const renderBlueprintDetails = (blueprint, container) => {
   cartLabel.prepend(cartCheckbox);
 
   cartCheckbox.addEventListener("change", event => {
-  if (event.target.checked) {
-    addIngredientsToCart(blueprint.ingredients);
-    renderShoppingCart();
-  }
-const renderBlueprintDetails = (blueprint, container) => {
-  container.textContent = "";
-
-  const title = document.createElement("h2");
-  title.textContent = blueprint.output_name;
-
-  const cartCheckbox = document.createElement("input");
-  cartCheckbox.type = "checkbox";
-
-  const cartLabel = document.createElement("label");
-  cartLabel.textContent = " Add materials to shopping cart";
-
-  cartLabel.prepend(cartCheckbox);
-
-  cartCheckbox.addEventListener("change", event => {
     if (event.target.checked) {
       addIngredientsToCart(blueprint.ingredients);
       renderShoppingCart();
     }
-  })
-};
+  });
 
   const heading = document.createElement("h3");
   heading.textContent = "Crafting Materials";
