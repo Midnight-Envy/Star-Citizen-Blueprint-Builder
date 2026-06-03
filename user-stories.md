@@ -49,3 +49,36 @@ As a user, I want to save blueprint materials to a shopping cart so that I can k
 - Material quantities are combined when duplicate materials exist.
 
 ---
+
+### Feature 4: Persist Shopping Cart with JSON Server
+
+#### User Story
+
+As a user, I want my shopping cart materials to be saved so that I do not lose my gathering list when the page refreshes.
+
+#### Details
+
+- User selects a blueprint option to add materials to the shopping cart.
+- The application sends the selected materials to `json-server`.
+- The shopping cart data is saved outside of temporary JavaScript memory.
+- When the page loads, the application fetches the saved shopping cart data.
+- Previously saved materials are displayed again after refreshing the page.
+
+---
+
+### Feature 5: Style Blueprint Builder Interface
+
+**Event Listener:** `mouseover`
+
+#### User Story
+
+As a user, I want the blueprint builder to have a clean sci-fi interface so that searching, viewing details, and tracking materials feels clear and enjoyable.
+
+#### Details
+
+- Blueprint results are displayed as organized cards.
+- The shopping cart is visually separated from the search results.
+- The blueprint details section is easy to find and read.
+- CSS is used to create a polished Star Citizen-inspired layout.
+- Interactive elements have hover effects so users can tell what can be clicked.
+- Blueprint cards visually respond when users hover over them.
