@@ -1,4 +1,5 @@
 let allBlueprints = [];
+let shoppingCart = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.querySelector("#blueprint-search-form");
@@ -8,13 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetchAllBlueprints("https://api.star-citizen.wiki/api/blueprints?page[size]=200")
     .then(blueprints => {
-
       allBlueprints = blueprints.filter(blueprint => {
         return blueprint.output_name;
       });
 
       console.log("All blueprints loaded:", allBlueprints.length);
-      console.log("Blueprint data:", allBlueprints); //
+      console.log("Blueprint data:", allBlueprints); 
     });
 
   searchForm.addEventListener("submit", event => {
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .includes(searchTerm);
     });
 
-    renderBlueprints(matchingBlueprints, blueprintContainer, blueprintDetails);
+    renderBlueprintCards(matchingBlueprints, blueprintContainer, blueprintDetails);
   });
 });
 
@@ -50,7 +50,7 @@ const fetchAllBlueprints = url => {
     });
 };
 
-const renderBlueprints = (blueprints, container, detailsContainer) => {
+const renderBlueprintCards = (blueprints, container, detailsContainer) => {
   container.textContent = "";
 
   if (blueprints.length === 0) {
@@ -99,14 +99,49 @@ const renderBlueprintDetails = (blueprint, container) => {
   const title = document.createElement("h2");
   title.textContent = blueprint.output_name;
 
+  const cartCheckbox = document.createElement("input");
+  cartCheckbox.type = "checkbox";
+
+  const cartLabel = document.createElement("label");
+  cartLabel.textContent = " Add materials to shopping cart";
+
+  cartLabel.prepend(cartCheckbox);
+
+  cartCheckbox.addEventListener("change", event => {
+  if (event.target.checked) {
+    addIngredientsToCart(blueprint.ingredients);
+    renderShoppingCart();
+  }
+const renderBlueprintDetails = (blueprint, container) => {
+  container.textContent = "";
+
+  const title = document.createElement("h2");
+  title.textContent = blueprint.output_name;
+
+  const cartCheckbox = document.createElement("input");
+  cartCheckbox.type = "checkbox";
+
+  const cartLabel = document.createElement("label");
+  cartLabel.textContent = " Add materials to shopping cart";
+
+  cartLabel.prepend(cartCheckbox);
+
+  cartCheckbox.addEventListener("change", event => {
+    if (event.target.checked) {
+      addIngredientsToCart(blueprint.ingredients);
+      renderShoppingCart();
+    }
+  })
+};
+
   const heading = document.createElement("h3");
   heading.textContent = "Crafting Materials";
 
   const list = document.createElement("ul");
-  console.log(blueprint.ingredients);
 
   blueprint.ingredients.forEach(ingredient => {
     const item = document.createElement("li");
+
     item.textContent =
       `${ingredient.name}: ${ingredient.quantity_scu} SCU`;
 
@@ -115,7 +150,40 @@ const renderBlueprintDetails = (blueprint, container) => {
 
   container.append(
     title,
+    cartLabel,
     heading,
     list
   );
+};
+
+const addIngredientsToCart = ingredients => {
+  ingredients.forEach(ingredient => {
+    const existingMaterial = shoppingCart.find(material => {
+      return material.name === ingredient.name;
+    });
+
+    if (existingMaterial) {
+      existingMaterial.quantity_scu += ingredient.quantity_scu;
+    } else {
+      shoppingCart.push({
+        name: ingredient.name,
+        quantity_scu: ingredient.quantity_scu
+      });
+    }
+  });
+};
+
+const renderShoppingCart = () => {
+  const shoppingCartList = document.querySelector("#shopping-cart-list");
+
+  shoppingCartList.textContent = "";
+
+  shoppingCart.forEach(material => {
+    const item = document.createElement("li");
+
+    item.textContent =
+      `${material.name}: ${material.quantity_scu} SCU`;
+
+    shoppingCartList.append(item);
+  });
 };
