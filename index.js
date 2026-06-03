@@ -1,6 +1,8 @@
 let allBlueprints = [];
 let shoppingCart = [];
 
+const cartUrl = "http://localhost:3000/cart";
+
 document.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.querySelector("#blueprint-search-form");
   const searchInput = document.querySelector("#blueprint-search-input");
@@ -30,7 +32,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderBlueprintCards(matchingBlueprints, blueprintContainer, blueprintDetails);
   });
+
+  fetch(cartUrl)
+  .then(response => response.json())
+  .then(savedCart => {
+    shoppingCart = savedCart;
+    renderShoppingCart();
+  });
+
+  const clearCartButton = document.querySelector("#clear-cart-button");
+
+  clearCartButton.addEventListener("click", () => {
+  clearShoppingCart();
+  });
 });
+
+const clearShoppingCart = () => {
+  const deleteRequests = shoppingCart.map(material => {
+    return fetch(`${cartUrl}/${material.id}`, {
+      method: "DELETE"
+    });
+  });
+
+  Promise.all(deleteRequests).then(() => {
+    shoppingCart = [];
+    renderShoppingCart();
+  });
+};
 
 const fetchAllBlueprints = url => {
   return fetch(url)
@@ -109,8 +137,7 @@ const renderBlueprintDetails = (blueprint, container) => {
 
   cartCheckbox.addEventListener("change", event => {
     if (event.target.checked) {
-      addIngredientsToCart(blueprint.ingredients);
-      renderShoppingCart();
+      addIngredientsToCart(blueprint.ingredients)
     }
   });
 
@@ -144,11 +171,38 @@ const addIngredientsToCart = ingredients => {
 
     if (existingMaterial) {
       existingMaterial.quantity_scu += ingredient.quantity_scu;
+
+      fetch(`${cartUrl}/${existingMaterial.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          quantity_scu: existingMaterial.quantity_scu
+        })
+      })
+        .then(response => response.json())
+        .then(updatedMaterial => {
+          renderShoppingCart();
+        });
     } else {
-      shoppingCart.push({
+      const newMaterial = {
         name: ingredient.name,
         quantity_scu: ingredient.quantity_scu
-      });
+      };
+
+      fetch(cartUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newMaterial)
+      })
+        .then(response => response.json())
+        .then(savedMaterial => {
+          shoppingCart.push(savedMaterial);
+          renderShoppingCart();
+        });
     }
   });
 };
