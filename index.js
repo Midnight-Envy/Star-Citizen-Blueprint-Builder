@@ -3,12 +3,30 @@ let shoppingCart = [];
 
 const cartUrl = "http://localhost:3000/cart";
 
+const backgrounds = [
+  "./assets/backgrounds/background-1.jpg",
+  "./assets/backgrounds/background-2.jpg",
+  "./assets/backgrounds/background-3.jpg"
+];
+
+const musicTracks = [
+  "./assets/music/track-1.mp3",
+  "./assets/music/track-2.mp3",
+  "./assets/music/track-3.mp3"
+];
+
 document.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.querySelector("#blueprint-search-form");
   const searchInput = document.querySelector("#blueprint-search-input");
   const blueprintContainer = document.querySelector("#blueprint-container");
   const blueprintDetails = document.querySelector("#blueprint-details");
   const clearCartButton = document.querySelector("#clear-cart-button");
+  const blueprintCount = document.querySelector("#blueprint-count");
+  const musicButton = document.querySelector("#music-button");
+  const backgroundMusic = document.querySelector("#background-music");
+
+  setRandomBackground();
+  setupMusicPlayer(musicButton, backgroundMusic);
 
   fetchAllBlueprints("https://api.star-citizen.wiki/api/blueprints?page[size]=200")
     .then(blueprints => {
@@ -17,7 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       console.log("All blueprints loaded:", allBlueprints.length);
-      console.log("Blueprint data:", allBlueprints);
+      // console.log("Blueprint data:", allBlueprints);
+
+      renderBlueprintCount(allBlueprints.length);
     });
 
   fetch(cartUrl)
@@ -39,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     renderBlueprintCards(matchingBlueprints, blueprintContainer, blueprintDetails);
+    renderBlueprintCount(matchingBlueprints.length);
   });
 
   clearCartButton.addEventListener("click", () => {
@@ -225,4 +246,38 @@ const renderShoppingCart = () => {
 
     shoppingCartList.append(item);
   });
+};
+
+const setRandomBackground = () => {
+  const randomIndex = Math.floor(Math.random() * backgrounds.length);
+  const randomBackground = backgrounds[randomIndex];
+
+  document.body.style.backgroundImage =
+    `linear-gradient(rgba(3, 10, 22, 0.72), rgba(3, 10, 22, 0.88)), url("${randomBackground}")`;
+};
+
+const setupMusicPlayer = (musicButton, backgroundMusic) => {
+  const randomIndex = Math.floor(Math.random() * musicTracks.length);
+  const randomTrack = musicTracks[randomIndex];
+
+  console.log("Selected music track:", randomTrack);
+
+  backgroundMusic.src = randomTrack;
+  backgroundMusic.loop = true;
+  backgroundMusic.volume = 0.35;
+
+  musicButton.addEventListener("click", () => {
+    if (backgroundMusic.paused) {
+      backgroundMusic.play();
+      musicButton.textContent = "⏸";
+    } else {
+      backgroundMusic.pause();
+      musicButton.textContent = "▶";
+    }
+  });
+};
+
+const renderBlueprintCount = count => {
+  const blueprintCount = document.querySelector("#blueprint-count");
+  blueprintCount.textContent = `Showing ${count} blueprints`;
 };
