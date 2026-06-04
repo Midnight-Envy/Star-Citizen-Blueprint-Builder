@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.querySelector("#blueprint-search-input");
   const blueprintContainer = document.querySelector("#blueprint-container");
   const blueprintDetails = document.querySelector("#blueprint-details");
-  const clearCartButton = document.querySelector("#clear-cart-button");
 
   fetchAllBlueprints("https://api.star-citizen.wiki/api/blueprints?page[size]=200")
     .then(blueprints => {
@@ -17,14 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       console.log("All blueprints loaded:", allBlueprints.length);
-      console.log("Blueprint data:", allBlueprints);
-    });
-
-  fetch(cartUrl)
-    .then(response => response.json())
-    .then(savedCart => {
-      shoppingCart = savedCart;
-      renderShoppingCart();
+      console.log("Blueprint data:", allBlueprints); 
     });
 
   searchForm.addEventListener("submit", event => {
@@ -41,8 +33,17 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBlueprintCards(matchingBlueprints, blueprintContainer, blueprintDetails);
   });
 
+  fetch(cartUrl)
+  .then(response => response.json())
+  .then(savedCart => {
+    shoppingCart = savedCart;
+    renderShoppingCart();
+  });
+
+  const clearCartButton = document.querySelector("#clear-cart-button");
+
   clearCartButton.addEventListener("click", () => {
-    clearShoppingCart();
+  clearShoppingCart();
   });
 });
 
@@ -63,6 +64,7 @@ const fetchAllBlueprints = url => {
   return fetch(url)
     .then(response => response.json())
     .then(data => {
+
       const blueprints = data.data;
 
       if (data.links.next) {
@@ -81,6 +83,7 @@ const renderBlueprintCards = (blueprints, container, detailsContainer) => {
 
   if (blueprints.length === 0) {
     container.textContent = "No blueprints found.";
+    
     return;
   }
 
@@ -93,10 +96,12 @@ const renderBlueprintCards = (blueprints, container, detailsContainer) => {
     title.textContent = blueprint.output_name;
 
     const craftTime = document.createElement("p");
-    craftTime.textContent = `Craft Time: ${blueprint.craft_time_label}`;
+    craftTime.textContent =
+      `Craft Time: ${blueprint.craft_time_label}`;
 
     const ingredientCount = document.createElement("p");
-    ingredientCount.textContent = `Ingredient Count: ${blueprint.ingredient_count}`;
+    ingredientCount.textContent =
+      `Ingredient Count: ${blueprint.ingredient_count}`;
 
     card.addEventListener("click", () => {
       const selectedBlueprint = allBlueprints.find(currentBlueprint => {
@@ -132,7 +137,7 @@ const renderBlueprintDetails = (blueprint, container) => {
 
   cartCheckbox.addEventListener("change", event => {
     if (event.target.checked) {
-      addIngredientsToCart(blueprint.ingredients);
+      addIngredientsToCart(blueprint.ingredients)
     }
   });
 
@@ -145,7 +150,7 @@ const renderBlueprintDetails = (blueprint, container) => {
     const item = document.createElement("li");
 
     item.textContent =
-      `${ingredient.name}: ${normalizeQuantityScu(ingredient)} SCU`;
+      `${ingredient.name}: ${ingredient.quantity_scu} SCU`;
 
     list.append(item);
   });
@@ -158,24 +163,14 @@ const renderBlueprintDetails = (blueprint, container) => {
   );
 };
 
-const normalizeQuantityScu = ingredient => {
-  if (ingredient.quantity_scu !== null) {
-    return ingredient.quantity_scu;
-  }
-
-  return ingredient.quantity / 1000;
-};
-
 const addIngredientsToCart = ingredients => {
   ingredients.forEach(ingredient => {
-    const normalizedQuantity = normalizeQuantityScu(ingredient);
-
     const existingMaterial = shoppingCart.find(material => {
       return material.name === ingredient.name;
     });
 
     if (existingMaterial) {
-      existingMaterial.quantity_scu += normalizedQuantity;
+      existingMaterial.quantity_scu += ingredient.quantity_scu;
 
       fetch(`${cartUrl}/${existingMaterial.id}`, {
         method: "PATCH",
@@ -187,13 +182,13 @@ const addIngredientsToCart = ingredients => {
         })
       })
         .then(response => response.json())
-        .then(() => {
+        .then(updatedMaterial => {
           renderShoppingCart();
         });
     } else {
       const newMaterial = {
         name: ingredient.name,
-        quantity_scu: normalizedQuantity
+        quantity_scu: ingredient.quantity_scu
       };
 
       fetch(cartUrl, {
