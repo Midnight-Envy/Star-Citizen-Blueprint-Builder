@@ -168,6 +168,6 @@ in your browser.
 
 ## Author
 
-Thomas Correa
+Thomas Correia
 
 Power Coding Academy - JavaScript Project 1
